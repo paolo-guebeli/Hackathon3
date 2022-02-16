@@ -23,7 +23,8 @@ def converter(base_path='10_patients'):
         path += '/' + os.listdir(path)[0]
         path += '/' + os.listdir(path)[0]
         result_path = base_path+'/'+dir+'-nrrd'
-        os.system(f'plastimatch convert --input {path} --output-prefix {result_path} --prefix-format nrrd --output-img {result_path+"_full.nrrd"}')
+        subprocess.call(['plastimatch', 'convert', '--input', path, '--output-prefix', result_path, '--prefix-format', 'nrrd', '--output-img', result_path+"_full.nrrd"])
+
 
 
 def main():

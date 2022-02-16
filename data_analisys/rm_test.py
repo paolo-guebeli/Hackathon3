@@ -2,27 +2,28 @@ import os
 
 import SimpleITK as sitk
 import six
+import pandas as pd
+import os
 
 import radiomics as rm
 from radiomics import featureextractor
 
 
-def main():
-    data_dir = '.'
-    imageName, maskName = rm.getTestCase('brain1', data_dir)
-    params = os.path.join(data_dir, "Params.yaml")
-    extractor = featureextractor.RadiomicsFeatureExtractor(params)
-    result = extractor.execute(imageName, maskName)
-    for key, val in six.iteritems(result):
-        print("\t%s: %s" % (key, val))
-    result = extractor.execute(imageName, maskName, voxelBased=True)
-    for key, val in six.iteritems(result):
-        if isinstance(val, sitk.Image):  # Feature map
-            sitk.WriteImage(val, key + '.nrrd', True)
-            print("Stored feature %s in %s" % (key, key + ".nrrd"))
-        else:  # Diagnostic information
-            print("\t%s: %s" % (key, val))
-
-
-if __name__ == '__main__':
-    main()
+def get_features(path):
+    tdf_list = []
+    dir_list = []
+    for dir in os.listdir():
+        if '_full.nrrd' not in dir:
+            dir_list.append(dir)
+    for folder in dir_list:
+        extractor = featureextractor.RadiomicsFeatureExtractor("Params.yaml")
+        result = extractor.execute(path+'LUNG1-001-nrrd_full.nrrd', path + 'LUNG1-001-nrrd/GTV-1.nrrd')
+        clean_dict = {}
+        for key, value in result.items():
+            if 'diagnostics' not in key:
+                value = float(value)
+                clean_dict[key] = value
+        tdf = pd.DataFrame(columns=clean_dict.keys())
+        tdf = tdf.append(clean_dict, ignore_index=True)
+        tdf_list.append(tdf)
+    return tdf_list

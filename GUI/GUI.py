@@ -144,7 +144,19 @@ def get_prediction(path):
     predictions_n = n_stage_model.predict(n_features)
     print(f"N stage {predictions_n} is predicted for the patient")
 
-    predictions = [int(predictions_n[0]), int(predictions_t[0]), pred_over, 0, 0]
+    features_df = features_df.drop(['age', 'gender'], axis=1)
+
+    histology_model_pkl = open('rf_classifier.pkl', 'rb')
+    histology_model = pickle.load(histology_model_pkl)
+    predictions_h = histology_model.predict(features_df)
+    print(f"The patient is predicted to have a {predictions_h} cancer")
+
+    n_stage_model_pkl = open('lasso_regression.pkl', 'rb')
+    n_stage_model = pickle.load(n_stage_model_pkl)
+    predictions_le = n_stage_model.predict(features_df)
+    print(f"The patient expected life is {predictions_le}")
+
+    predictions = [int(predictions_n[0]), int(predictions_t[0]), pred_over, predictions_h, predictions_le]
     # Add PDF creator
     pdfFunction.createPdf(predictions)
 

@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-import imp
 import os, glob
 from tabnanny import filename_only
 from tkinter import filedialog
@@ -11,6 +10,7 @@ import numpy as np
 import pylab as pl
 import sys
 import matplotlib.path as mplPath
+import one_time_features
 
 # set plotly credentials here 
 # this allows you to send results to your account plotly.tools.set_credentials_file(username=your_username, api_key=your_key
@@ -67,17 +67,18 @@ def browse_button():
     #tdf = get_features(path=filename)
     #tdf.to_csv('features.csv', sep=';')
     print(filename)
+    img_path = one_time_features.move_files(filename)
     newWindow = Toplevel(root)
     newWindow.geometry('400x400')
     label1 = Label(newWindow, text="Select a option:")
     label1.pack(fill=X, padx=5, pady=5)
-    button2 = Button(newWindow, text="Run script", command=lambda: print('todo'), bg='LIGHTBLUE').pack(
+    button2 = Button(newWindow, text="Run script", command=lambda: get_prediction(), bg='LIGHTBLUE').pack(
         side=TOP,
         ipadx=5,
         ipady=5,
         expand=True
     )
-    button3 = Button(newWindow, text="view image", command=lambda: view_image(filename), bg='LIGHTBLUE').pack(
+    button3 = Button(newWindow, text="view image", command=lambda: view_image(filename, img_path), bg='LIGHTBLUE').pack(
         side=TOP,
         ipadx=5,
         ipady=5,
@@ -97,7 +98,7 @@ def browse_button():
     )
 
 
-def view_image(path):
+def view_image(path, img_path):
         class IndexTracker(object):
             def __init__(self, ax, X):
                 self.ax = ax
@@ -127,13 +128,14 @@ def view_image(path):
         os.system("tree "+ path)
         #os.system("tree C:/Users/giorg/Desktop/test python/LUNG1-001/09-18-2008-StudyID-NA-69331")
         plots = []
-        for f in glob.glob(path + "/img/*.dcm"):
+        for f in glob.glob(img_path + "/*.dcm"):
         #for f in glob.glob("C:/Users/giorg/Desktop/test python/LUNG1-001/09-18-2008-StudyID-NA-69331/img/*.dcm"):
-            pass
-            ds = pydicom.dcmread(f)
-            pix = ds.pixel_array
-            pix = pix*1+(-1024)
-            plots.append(pix)
+            if '1-1.dcm' not in f:
+                pass
+                ds = pydicom.dcmread(f)
+                pix = ds.pixel_array
+                pix = pix*1+(-1024)
+                plots.append(pix)
 
         y = np.dstack(plots)
 
@@ -141,35 +143,43 @@ def view_image(path):
 
         fig.canvas.mpl_connect('scroll_event', tracker.onscroll)
         plt.show()
-    
 
-root = Tk()
-root.configure(bg='white')
-root.geometry('400x400')
-root.resizable(True, True)
-root.title('Radiomics')
 
-label = Label(root, text='Click button to select the patient to analyse',bg='white')
-label.pack(ipadx=5, ipady=5)
+def get_prediction(path):
+    base_path = one_time_features.converter(path)
+    features = one_time_features.get_features(base_path)
+    # Add prediction script
+    # Add PDF creator
 
-button = Button(text="Select patient folder", command=browse_button, bg='LIGHTBLUE').pack(
-    side=TOP,
-    ipadx=5,
-    ipady=5,
-    expand=True
-)
-exit_button = Button(
-    root,
-    text='Exit',
-    command=lambda: root.quit()
-).pack(
-    side=TOP,
-    ipadx=5,
-    ipady=5,
-    expand=True
+
+if __name__ == '__main__':
+    root = Tk()
+    root.configure(bg='white')
+    root.geometry('400x400')
+    root.resizable(True, True)
+    root.title('Radiomics')
+
+    label = Label(root, text='Click button to select the patient to analyse',bg='white')
+    label.pack(ipadx=5, ipady=5)
+
+    button = Button(text="Select patient folder", command=browse_button, bg='LIGHTBLUE').pack(
+        side=TOP,
+        ipadx=5,
+        ipady=5,
+        expand=True
     )
+    exit_button = Button(
+        root,
+        text='Exit',
+        command=lambda: root.quit()
+    ).pack(
+        side=TOP,
+        ipadx=5,
+        ipady=5,
+        expand=True
+        )
 
-mainloop()
+    mainloop()
 
 
 

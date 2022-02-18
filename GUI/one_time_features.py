@@ -8,27 +8,29 @@ from radiomics import featureextractor
 
 
 def move_files(path):
-        path += '/' + os.listdir(path)[0]
-        dir_list = []
-        for i in os.listdir(path):
-            if 'Segmentation' not in i:
-                dir_list.append(i)
-            else:
-                shutil.rmtree(path+'/'+i)
-        seg_path = path + '/' + dir_list[1]
-        path += '/' + dir_list[0]
-        if len(os.listdir(seg_path)) > 0:
-            for seg_file in os.listdir(seg_path):
-                os.rename(seg_path + '/' + seg_file, path + '/' + seg_file)
-        shutil.rmtree(seg_path)
-        return path
+        if len(os.listdir(path)) > 1:
+            dir_list = []
+            for i in os.listdir(path):
+                if 'Segmentation' not in i:
+                    dir_list.append(i)
+                else:
+                    shutil.rmtree(path+'/'+i)
+            seg_path = path + '/' + dir_list[1]
+            path += '/' + dir_list[0]
+            if len(os.listdir(seg_path)) > 0:
+                for seg_file in os.listdir(seg_path):
+                    os.rename(seg_path + '/' + seg_file, path + '/' + seg_file)
+            shutil.rmtree(seg_path)
+            return path
+        return path+'/'+os.listdir(path)[0]
 
 
 def converter(base_path):
         path = base_path + '/' + os.listdir(base_path)[0]
-        path += '/' + os.listdir(path)[0]
+        base_path = '/'.join(base_path.slice('/')[:-1])
         result_path = base_path + '-nrrd'
         subprocess.call(['plastimatch', 'convert', '--input', path, '--output-prefix', result_path, '--prefix-format', 'nrrd', '--output-img', result_path+"_full.nrrd"])
+        return base_path
 
 
 def get_features(path):

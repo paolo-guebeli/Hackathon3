@@ -15,7 +15,7 @@ def createPdf(data_vector):
                             topMargin=48, bottomMargin=18)
 
     Story = []
-    logo = "cancerInstitute.jpg"
+    logo = "cancerInstitute.png"
 
     date = datetime.date.today()
     department_name = "Supsi Cancer Department"

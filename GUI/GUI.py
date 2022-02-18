@@ -114,6 +114,15 @@ def get_prediction(path):
     overall_stage_model_pkl = open(overall_model_pkl_filename, 'rb')
     overall_stage_model = pickle.load(overall_stage_model_pkl)
     predictions_overall = overall_stage_model.predict(features_df)
+    if predictions_overall == 0:
+        pred_over = "I"
+    if predictions_overall == 0:
+        pred_over = "II"
+    if predictions_overall == 0:
+        pred_over = "IIIa"
+    if predictions_overall == 0:
+        pred_over = "IIIb"
+    print(f"Overall stage {pred_over} is predicted for the patient")
     
     # t_stage model
     relevant_feat_t_list = ['original_shape_LeastAxisLength', 'original_shape_MinorAxisLength',
@@ -124,6 +133,7 @@ def get_prediction(path):
     t_stage_model_pkl = open(t_model_pkl_filename, 'rb')
     t_stage_model = pickle.load(t_stage_model_pkl)
     predictions_t = t_stage_model.predict(features_df)
+    print(f"T stage {predictions_t} is predicted for the patient")
     
     relevant_feat_n_list = ['original_shape_Flatness', 'original_shape_Sphericity', 'original_firstorder_Skewness',
                             'metastases']
@@ -131,6 +141,7 @@ def get_prediction(path):
     n_stage_model_pkl = open(n_model_pkl_filename, 'rb')
     n_stage_model = pickle.load(n_stage_model_pkl)
     predictions_n = n_stage_model.predict(features_df)
+    print(f"N stage {predictions_n} is predicted for the patient")
     
     # Add PDF creator
     pdfFunction.createPdf()

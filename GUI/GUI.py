@@ -156,7 +156,7 @@ def get_prediction(path):
     overall_model_pkl_filename = 'overall_stage_model.pkl'
     overall_stage_model_pkl = open(overall_model_pkl_filename, 'rb')
     overall_stage_model = pickle.load(overall_stage_model_pkl)
-    overall_stage_model.predict(features_df)
+    predictions_overall = overall_stage_model.predict(features_df)
     
     # t_stage model
     relevant_feat_t_list = ['original_shape_LeastAxisLength', 'original_shape_MinorAxisLength',
@@ -166,7 +166,14 @@ def get_prediction(path):
     t_model_pkl_filename = 't_stage_model.pkl'
     t_stage_model_pkl = open(t_model_pkl_filename, 'rb')
     t_stage_model = pickle.load(t_stage_model_pkl)
-    t_stage_model.predict(features_df)
+    predictions_t = t_stage_model.predict(features_df)
+    
+    relevant_feat_n_list = ['original_shape_Flatness', 'original_shape_Sphericity', 'original_firstorder_Skewness',
+                            'metastases']
+    n_model_pkl_filename = 'n_stage_model.pkl'
+    n_stage_model_pkl = open(n_model_pkl_filename, 'rb')
+    n_stage_model = pickle.load(n_stage_model_pkl)
+    predictions_n = n_stage_model.predict(features_df)
     
     # Add PDF creator
 

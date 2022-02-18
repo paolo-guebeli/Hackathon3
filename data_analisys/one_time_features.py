@@ -1,19 +1,14 @@
-import os
+
 import shutil
 import subprocess
 
-import SimpleITK as sitk
-import six
-import pandas as pd
 import os
 
-import radiomics as rm
 from radiomics import featureextractor
 
 
 def move_files(path):
         path += '/' + os.listdir(path)[0]
-        seg_dir = ''
         dir_list = []
         for i in os.listdir(path):
             if 'Segmentation' not in i:
@@ -26,6 +21,7 @@ def move_files(path):
             for seg_file in os.listdir(seg_path):
                 os.rename(seg_path + '/' + seg_file, path + '/' + seg_file)
         shutil.rmtree(seg_path)
+        return path
 
 
 def converter(base_path):
@@ -59,14 +55,10 @@ def get_features(path):
     return clean_dict
 
 
-def main(path, move=True):
-    if move:
-        move_files(path)
+def main(path):
+    move_files(path)
     converter(path)
     print(get_features(path))
 
-
-if __name__ == '__main__':
-    main('one_test/LUNG1-001', move=False)
 
 

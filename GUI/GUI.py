@@ -11,6 +11,7 @@ import pylab as pl
 import sys
 import matplotlib.path as mplPath
 import one_time_features
+import pickle
 
 # set plotly credentials here 
 # this allows you to send results to your account plotly.tools.set_credentials_file(username=your_username, api_key=your_key
@@ -148,7 +149,16 @@ def view_image(path, img_path):
 def get_prediction(path):
     base_path = one_time_features.converter(path)
     features = one_time_features.get_features(base_path)
+    features_df = pd.DataFrame.from_dict(features)
+    relevant_feat_over_list = ['original_shape_Maximum2DDiameterRow', 'original_shape_Sphericity',
+                               'original_glcm_DifferenceEntropy', 'original_glrlm_ShortRunEmphasis', 'metastases']
+    
     # Add prediction script
+    overall_model_pkl_filename = 'overall_stage_model.pkl'
+    overall_stage_model_pkl = open(overall_model_pkl_filename, 'rb')
+    overall_stage_model = pickle.load(overall_stage_model_pkl)
+    overall_stage_model.predict(features_df)
+    
     # Add PDF creator
 
 

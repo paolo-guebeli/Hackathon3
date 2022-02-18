@@ -28,7 +28,7 @@ def browse_button():
     newWindow.geometry('400x400')
     label1 = Label(newWindow, text="Select a option:")
     label1.pack(fill=X, padx=5, pady=5)
-    button2 = Button(newWindow, text="Run script", command=lambda: get_prediction(), bg='LIGHTBLUE').pack(
+    button2 = Button(newWindow, text="Run script", command=lambda: get_prediction(filename), bg='LIGHTBLUE').pack(
         side=TOP,
         ipadx=5,
         ipady=5,
@@ -116,11 +116,11 @@ def get_prediction(path):
     predictions_overall = overall_stage_model.predict(features_df)
     if predictions_overall == 0:
         pred_over = "I"
-    if predictions_overall == 0:
+    if predictions_overall == 1:
         pred_over = "II"
-    if predictions_overall == 0:
+    if predictions_overall == 2:
         pred_over = "IIIa"
-    if predictions_overall == 0:
+    if predictions_overall == 3:
         pred_over = "IIIb"
     print(f"Overall stage {pred_over} is predicted for the patient")
     

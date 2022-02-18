@@ -27,7 +27,7 @@ def move_files(path):
 
 def converter(base_path):
         path = base_path + '/' + os.listdir(base_path)[0]
-        base_path = '/'.join(base_path.slice('/')[:-1])
+        base_path = '/'.join(base_path.split('/')[:-1])
         result_path = base_path + '-nrrd'
         subprocess.call(['plastimatch', 'convert', '--input', path, '--output-prefix', result_path, '--prefix-format', 'nrrd', '--output-img', result_path+"_full.nrrd"])
         return base_path

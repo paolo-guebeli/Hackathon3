@@ -15,7 +15,7 @@ def createPdf(data_vector):
                             topMargin=48, bottomMargin=18)
 
     Story = []
-    logo = "cancerInstitute.jpg"
+    logo = "cancerInstitute.png"
 
     date = datetime.date.today()
     department_name = "Supsi Cancer Department"
@@ -46,7 +46,7 @@ def createPdf(data_vector):
 
     #vector = [111, '2', "abaghjaa", '4', '5']
 
-    data = [['Stage T', 'Stage N', 'Overall Stage', 'Istology', 'Life expectancy'],
+    data = [['Stage T', 'Stage N', 'Overall Stage', 'Histology', 'Life expectancy'],
             [data_vector[0], data_vector[1], data_vector[2], data_vector[3], data_vector[4]]]
     table = Table(data)
     table.setStyle(TableStyle([('ALIGN', (1, 1), (-2, -2), 'RIGHT'),

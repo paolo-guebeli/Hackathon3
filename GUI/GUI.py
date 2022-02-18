@@ -142,6 +142,16 @@ def get_prediction(path):
     n_stage_model = pickle.load(n_stage_model_pkl)
     predictions_n = n_stage_model.predict(features_df)
     print(f"N stage {predictions_n} is predicted for the patient")
+
+    rf_model_pkl = open('rf_classifier.pkl', 'rb')
+    histology_model = pickle.load(rf_model_pkl)
+    predictions_h = histology_model.predict(features_df)
+    print(f"The patient is predicted to have a {predictions_h} cancer")
+
+    n_stage_model_pkl = open(n_model_pkl_filename, 'rb')
+    n_stage_model = pickle.load(n_stage_model_pkl)
+    predictions_n = n_stage_model.predict(features_df)
+    print(f"N stage {predictions_n} is predicted for the patient")
     
     # Add PDF creator
     pdfFunction.createPdf()

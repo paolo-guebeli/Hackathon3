@@ -12,6 +12,10 @@ import sys
 import matplotlib.path as mplPath
 import one_time_features
 import pdfFunction
+import pandas as pd
+import pickle
+
+
 
 
 def browse_button():
@@ -100,6 +104,35 @@ def get_prediction(path):
     features = one_time_features.get_features(base_path)
     # Add prediction script
     # pass data vector to pdf creator
+   
+
+    features_df = pd.DataFrame.from_dict(features)
+    
+    relevant_feat_over_list = ['original_shape_Maximum2DDiameterRow', 'original_shape_Sphericity',
+                               'original_glcm_DifferenceEntropy', 'original_glrlm_ShortRunEmphasis', 'metastases']
+    overall_model_pkl_filename = 'overall_stage_model.pkl'
+    overall_stage_model_pkl = open(overall_model_pkl_filename, 'rb')
+    overall_stage_model = pickle.load(overall_stage_model_pkl)
+    predictions_overall = overall_stage_model.predict(features_df)
+    
+    # t_stage model
+    relevant_feat_t_list = ['original_shape_LeastAxisLength', 'original_shape_MinorAxisLength',
+                            'original_shape_Sphericity', 'original_firstorder_90Percentile',
+                            'original_glcm_ClusterProminence', 'original_glcm_Correlation', 'original_glcm_Idn',
+                            'original_glrlm_ShortRunEmphasis', 'original_gldm_SmallDependenceEmphasis']
+    t_model_pkl_filename = 't_stage_model.pkl'
+    t_stage_model_pkl = open(t_model_pkl_filename, 'rb')
+    t_stage_model = pickle.load(t_stage_model_pkl)
+    predictions_t = t_stage_model.predict(features_df)
+    
+    relevant_feat_n_list = ['original_shape_Flatness', 'original_shape_Sphericity', 'original_firstorder_Skewness',
+                            'metastases']
+    n_model_pkl_filename = 'n_stage_model.pkl'
+    n_stage_model_pkl = open(n_model_pkl_filename, 'rb')
+    n_stage_model = pickle.load(n_stage_model_pkl)
+    predictions_n = n_stage_model.predict(features_df)
+    
+    # Add PDF creator
     pdfFunction.createPdf()
 
 

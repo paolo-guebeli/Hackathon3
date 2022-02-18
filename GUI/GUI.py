@@ -150,14 +150,23 @@ def get_prediction(path):
     base_path = one_time_features.converter(path)
     features = one_time_features.get_features(base_path)
     features_df = pd.DataFrame.from_dict(features)
+    
     relevant_feat_over_list = ['original_shape_Maximum2DDiameterRow', 'original_shape_Sphericity',
                                'original_glcm_DifferenceEntropy', 'original_glrlm_ShortRunEmphasis', 'metastases']
-    
-    # Add prediction script
     overall_model_pkl_filename = 'overall_stage_model.pkl'
     overall_stage_model_pkl = open(overall_model_pkl_filename, 'rb')
     overall_stage_model = pickle.load(overall_stage_model_pkl)
     overall_stage_model.predict(features_df)
+    
+    # t_stage model
+    relevant_feat_t_list = ['original_shape_LeastAxisLength', 'original_shape_MinorAxisLength',
+                            'original_shape_Sphericity', 'original_firstorder_90Percentile',
+                            'original_glcm_ClusterProminence', 'original_glcm_Correlation', 'original_glcm_Idn',
+                            'original_glrlm_ShortRunEmphasis', 'original_gldm_SmallDependenceEmphasis']
+    t_model_pkl_filename = 't_stage_model.pkl'
+    t_stage_model_pkl = open(t_model_pkl_filename, 'rb')
+    t_stage_model = pickle.load(t_stage_model_pkl)
+    t_stage_model.predict(features_df)
     
     # Add PDF creator
 
